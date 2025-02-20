@@ -1,55 +1,63 @@
 #!/bin/bash
 
-set -e  # Exit immediately on error
+set -e  # Thoát ngay khi gặp lỗi
 
-# 📌 Set paths (Update NDK version if necessary)
-export NDK_HOME=$HOME/Library/Android/sdk/ndk/27.1.12297006
+# 📌 Thiết lập đường dẫn (Cập nhật phiên bản NDK nếu cần)
+export NDK_HOME=$HOME/Library/Android/sdk/ndk/27.0.12077973
 export LIB_NAME=mobile_server
 export ANDROID_LIB_DIR=$LIB_NAME/android
 export HEADER_OUT=$ANDROID_LIB_DIR/cpp
 
-# 🔧 Define Android architectures
+# 🔧 Định nghĩa các kiến trúc Android cần build
 ARCHS=("aarch64-linux-android" "armv7-linux-androideabi" "x86_64-linux-android")
 
-# 🌍 Set environment variables for cross-compilation
+# 🌍 Thiết lập môi trường cross-compilation
 export PKG_CONFIG_ALLOW_CROSS=1
 export PKG_CONFIG_SYSROOT_DIR=$NDK_HOME/toolchains/llvm/prebuilt/darwin-x86_64/sysroot
 
-echo "🚀 Starting Android Rust build..."
+echo "🚀 Bắt đầu build Rust cho Android..."
 
-# 1️⃣ Ensure Rust targets are installed
+# 1️⃣ Đảm bảo các target Rust đã được cài đặt
 for ARCH in "${ARCHS[@]}"; do
     rustup target add $ARCH
 done
 
-# 2️⃣ Build Rust shared libraries for all targets
-cd $LIB_NAME
-for ARCH in "${ARCHS[@]}"; do
-    echo "📦 Building Rust shared library for $ARCH..."
-    cargo build --release --target $ARCH
-done
-cd ..
+# 2️⃣ Build thư viện Rust dưới dạng shared library cho các target
+cargo ndk -t arm64-v8a -t armeabi-v7a -t x86_64 build --release
 
-# 3️⃣ Copy the .so files to the correct Android jniLibs folder
+# 3️⃣ Sao chép file .so vào thư mục jniLibs tương ứng của Android
 for ARCH in "${ARCHS[@]}"; do
-    case $ARCH in
-        "aarch64-linux-android") ANDROID_ARCH="arm64-v8a" ;;
-        "armv7-linux-androideabi") ANDROID_ARCH="armeabi-v7a" ;;
-        "x86_64-linux-android") ANDROID_ARCH="x86_64" ;;
-    esac
+    if [[ "$ARCH" == "aarch64-linux-android" ]]; then
+        ANDROID_ARCH="arm64-v8a"
+    elif [[ "$ARCH" == "armv7-linux-androideabi" ]]; then
+        ANDROID_ARCH="armeabi-v7a"
+    elif [[ "$ARCH" == "x86_64-linux-android" ]]; then
+        ANDROID_ARCH="x86_64"
+    else
+        echo "⚠️ Không hỗ trợ kiến trúc: $ARCH"
+        exit 1
+    fi
 
     OUT_DIR=$ANDROID_LIB_DIR/jniLibs/$ANDROID_ARCH
-    mkdir -p $OUT_DIR
-    echo "📂 Copying lib$LIB_NAME.so to $OUT_DIR..."
+    if [ ! -d "$OUT_DIR" ]; then
+        echo "📂 Tạo thư mục: $OUT_DIR"
+        mkdir -p $OUT_DIR
+    fi
+
+    echo "📂 Sao chép lib$LIB_NAME.so vào $OUT_DIR..."
     cp target/$ARCH/release/lib$LIB_NAME.so $OUT_DIR/
 done
 
-# 4️⃣ Generate C header file (for JNI integration)
-echo "📝 Generating header file..."
-mkdir -p $HEADER_OUT
+# 4️⃣ Tạo file header C (cho JNI integration)
+echo "📝 Tạo file header..."
+if [ ! -d "$HEADER_OUT" ]; then
+    echo "📂 Tạo thư mục: $HEADER_OUT"
+    mkdir -p $HEADER_OUT
+fi
+
 cd $LIB_NAME
 cargo install --force cbindgen
 cbindgen --lang c --output ../$HEADER_OUT/$LIB_NAME.h
 cd ..
 
-echo "✅ Build complete! Shared libraries and headers are ready for Android."
+echo "✅ Build hoàn tất! Shared libraries và header đã sẵn sàng cho Android."

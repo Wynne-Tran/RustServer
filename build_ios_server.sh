@@ -18,13 +18,13 @@ fi
 
 # ✅ Build Rust for all iOS targets
 echo "📦 Building for iOS arm64 (devices)..."
-cargo build --release --target aarch64-apple-ios --manifest-path ios_server/Cargo.toml
+cargo build --release --target aarch64-apple-ios --manifest-path _server/Cargo.toml
 
 echo "📦 Building for iOS x86_64 simulator..."
-cargo build --release --target x86_64-apple-ios --manifest-path ios_server/Cargo.toml
+cargo build --release --target x86_64-apple-ios --manifest-path mobile_server/Cargo.toml
 
 echo "📦 Building for iOS arm64 simulator..."
-cargo build --release --target aarch64-apple-ios-sim --manifest-path ios_server/Cargo.toml
+cargo build --release --target aarch64-apple-ios-sim --manifest-path mobile_server/Cargo.toml
 
 echo "✅ Rust static libraries built!"
 
