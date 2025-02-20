@@ -1,0 +1,15 @@
+[package]
+name = "mobile_server"
+version = "0.1.0"
+edition = "2021"
+resolver = "2"
+
+[dependencies]
+actix-web = { version = "4.9.0"}
+serde = { version = "1.0.217", features = ["derive"] }
+tokio = { version = "1.43.0", features = ["full"] }
+
+
+[lib]
+
+#crate-type = ["staticlib"]

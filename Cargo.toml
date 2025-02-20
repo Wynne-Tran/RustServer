@@ -4,7 +4,7 @@
 #edition = "2024"
 resolver = "2"
 
-members = ["demo", "ios_server"]
+members = ["demo", "mobile_server"]
 [profile.release]
 opt-level = 3
 lto = true

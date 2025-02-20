@@ -736,15 +736,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ios_server"
-version = "0.1.0"
-dependencies = [
- "actix-web",
- "serde",
- "tokio",
-]
-
-[[package]]
 name = "itoa"
 version = "1.0.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -841,6 +832,15 @@ dependencies = [
  "log",
  "wasi",
  "windows-sys",
+]
+
+[[package]]
+name = "mobile_server"
+version = "0.1.0"
+dependencies = [
+ "actix-web",
+ "serde",
+ "tokio",
 ]
 
 [[package]]
