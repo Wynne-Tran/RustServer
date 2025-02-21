@@ -8,3 +8,4 @@ resolver = "2"
 actix-web = { version = "4.9.0" }
 serde = { version = "1.0.217", features = ["derive"] }
 tokio = { version = "1.43.0", features = ["full"] }
+jni = "0.21.1"

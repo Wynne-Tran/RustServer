@@ -7,8 +7,8 @@
 #include <stdlib.h>
 
 /**
- * Starts the Actix Web server inside a dedicated thread
+ * **Hàm gọi từ Android để chạy server**
  */
-void start_server(void);
+jstring Java_com_rustserver_MainActivity_start_1server(JNIEnv env, JClass);
 
 #endif  /* MOBILE_SERVER_H */

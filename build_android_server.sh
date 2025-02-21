@@ -6,7 +6,7 @@ set -e  # Exit immediately on error
 export NDK_HOME=$HOME/Library/Android/sdk/ndk/27.0.12077973
 export LIB_NAME=mobile_server
 export ANDROID_LIB_DIR=$LIB_NAME/android
-export HEADER_OUT=$ANDROID_LIB_DIR/cpp
+#export HEADER_OUT=$ANDROID_LIB_DIR/cpp
 
 # 🔧 Define Android architectures
 ARCHS=("aarch64-linux-android" "armv7-linux-androideabi" "x86_64-linux-android")
@@ -45,12 +45,12 @@ for ARCH in "${ARCHS[@]}"; do
 done
 
 # 4️⃣ Generate C header file (for JNI integration)
-echo "📝 Generating header file..."
-mkdir -p "$HEADER_OUT"
-
-cd $LIB_NAME
-cargo install --force cbindgen
-cbindgen --lang c --output ../$HEADER_OUT/$LIB_NAME.h
-cd ..
+#echo "📝 Generating header file..."
+#mkdir -p "$HEADER_OUT"
+#
+#cd $LIB_NAME
+#cargo install --force cbindgen
+#cbindgen --lang c --output ../$HEADER_OUT/$LIB_NAME.h
+#cd ..
 
 echo "✅ Build complete! Shared libraries and headers are ready for Android."
